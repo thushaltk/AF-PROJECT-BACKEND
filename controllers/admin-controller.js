@@ -1,3 +1,7 @@
+const HttpError = require("../models/http-error");
+const {validationResult} = require('express-validator');
+
+
 const ADMIN_LOGIN_DATA = {
     username: "admin",
     password: "admin"
@@ -5,6 +9,10 @@ const ADMIN_LOGIN_DATA = {
 
 
 const checkAdminLogin = (req, res, next) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        throw new HttpError("Invalid data, check input again.", 422);
+    }
     console.log("came to login api");
     const {username, password} = req.body;
     console.log(req.body);
@@ -14,10 +22,7 @@ const checkAdminLogin = (req, res, next) => {
             message: "LOGIN SUCCESSFULL!!"
         });
     }else{
-        res.status(404).json({
-            message: "Invalid Credentials"
-        })
-        //throw new HttpError("LOGIN CREDENTIALS INVALID.", 404);
+        throw new HttpError("LOGIN CREDENTIALS INVALID.", 404);
     }
 }
 
