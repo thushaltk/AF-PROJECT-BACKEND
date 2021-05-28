@@ -1,5 +1,6 @@
-const { validationResult } = require('express-validator'); //For Validation
 const HttpError = require('../models/http-error');
+const { validationResult } = require('express-validator'); //For Validation
+const { v4: uuidv4 } = require('uuid');
 
 //Mongoose schemas
 const Attendee = require("../models/attendee");
@@ -19,10 +20,12 @@ const addAttendeeDetails = async (req, res, next) => {
      * Assign data from 'req.body' to the object.
     */
     const createAttendee = new Attendee({
+        uid: uuidv4(),
         fullName: req.body.fullName,
         address: req.body.address,
         email: req.body.email,
-        mobileNo: req.body.mobileNo
+        mobileNo: req.body.mobileNo,
+        isPaid: req.body.isPaid
     })
     /**
      * Saves 'createAttendee' schema to mongodb.
