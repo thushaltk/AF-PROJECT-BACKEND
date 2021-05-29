@@ -1,6 +1,7 @@
-const HttpError = require('../models/http-error');
 const { validationResult } = require('express-validator'); //For Validation
 const { v4: uuidv4 } = require('uuid');
+
+const HttpError = require('../models/http-error');
 
 //Mongoose schemas
 const Attendee = require("../models/attendee");

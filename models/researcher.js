@@ -1,11 +1,13 @@
-class Researcher {
-    constructor(fullName, address, email, mobileNo, researchPaper){
-        this.fullName = fullName;
-        this.address = address;
-        this.email = email;
-        this.mobileNo = mobileNo;
-        this.researchPaper = researchPaper;
-    }
-}
+const mongoose = require('mongoose');
 
-module.exports = Researcher;
+const researcherSchema = new mongoose.Schema({
+        id: {type: String, required: true},
+        fullName: {type: String, required: true},
+        address: {type: String, required: true},
+        email: {type: String, required: true},
+        mobileNo: {type: String, required: true},
+        isPaid: {type: String, required: true},
+        researchPaperURL: {type: String, required: true}
+});
+
+module.exports = mongoose.model('Researcher', researcherSchema);

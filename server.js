@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const researcherRoutes = require('./routes/researcher-routes');
 const adminRoutes = require('./routes/admin-routes');
 const attendeeRoutes = require('./routes/attendee-routes');
+const wspresenterRoutes = require('./routes/ws-presenter-routes');
 const HttpError = require('./models/http-error');
 
 
@@ -22,6 +23,8 @@ app.use((req, res, next) => {
       'Origin, X-Requested-With, Content-Type, Accept, Authorization'
     );
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
+    res.setHeader('Access-Control-Expose-Headers', 'Content-Range');
+    res.setHeader('Content-Range', 'bytes: 0-10/*');
   
     next();
 });
@@ -29,6 +32,7 @@ app.use((req, res, next) => {
 app.use('/api/admin', adminRoutes);
 app.use('/api/researcher', researcherRoutes);
 app.use('/api/attendee', attendeeRoutes);
+app.use('/api/wspresenter', wspresenterRoutes);
 
 
 app.use((req, res, next) => {
@@ -47,7 +51,7 @@ app.use((error, req, res, next) => {
 
 
 mongoose.connect(
-    'mongodb+srv://thushaltk:AbtFsTBem9WCBkNd@cluster0.tivsh.mongodb.net/icafLog?retryWrites=true&w=majority'
+    'mongodb+srv://thushaltk:thushal1234@cluster0.tivsh.mongodb.net/icafLog?retryWrites=true&w=majority'
 ).then(() => {
     console.log("Connected to Database :)....");
     app.listen(5000, () => {
