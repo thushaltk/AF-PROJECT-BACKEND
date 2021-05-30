@@ -14,7 +14,8 @@ const addAttendeeDetails = async (req, res, next) => {
      */
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        throw new HttpError("Invalid data, check inputs again", 422);
+        return res.send({message: "INVALID"});
+        //throw new HttpError("Invalid data, check inputs again", 422);
     }
     /**
      * Creates an object from "Attendee" mongoose schema
@@ -42,4 +43,17 @@ const addAttendeeDetails = async (req, res, next) => {
     res.status(201).json({ attendee: createAttendee });
 }
 
+const getAllAttendeeDetails = async (req, res, next) => {
+    let attendees;
+    try{
+        attendees = await Attendee.find({}, 'id fullName email address mobileNo');
+        console.log(attendees);
+    }catch(err){
+        console.log(err);
+        throw new HttpError("Fetching attendees failed, try again later", 500);
+    }
+    res.send(attendees);
+}
+
 exports.addAttendeeDetails = addAttendeeDetails;
+exports.getAllAttendeeDetails = getAllAttendeeDetails;

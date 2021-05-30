@@ -16,4 +16,6 @@ router.post("/add-attendee",
 ]
 ,attendeeControllers.addAttendeeDetails);
 
+router.get("/", attendeeControllers.getAllAttendeeDetails),
+
 module.exports = router;

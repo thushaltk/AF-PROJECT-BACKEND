@@ -17,7 +17,8 @@ const addNewWSPresenter = async (req, res, next) => {
         address: req.body.address,
         email: req.body.email,
         mobileNo: req.body.mobileNo,
-        wsProposalLink: req.body.wsProposalLink
+        wsProposalLink: req.body.wsProposalLink,
+        status: 'Pending'
     })
     try {
         await createWSPresenter.save(); //saves data to MongoDB

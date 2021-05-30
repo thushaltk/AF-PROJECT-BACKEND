@@ -2,13 +2,15 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
-//Routes
+const HttpError = require('./models/http-error');
+
+//Route imports
 const researcherRoutes = require('./routes/researcher-routes');
 const adminRoutes = require('./routes/admin-routes');
 const attendeeRoutes = require('./routes/attendee-routes');
 const wspresenterRoutes = require('./routes/ws-presenter-routes');
-const HttpError = require('./models/http-error');
-
+const editorRoutes = require('./routes/editor-routes');
+const reviewerRoutes = require('./routes/reviewer-routes');
 
 const app = express();
 
@@ -29,10 +31,16 @@ app.use((req, res, next) => {
     next();
 });
 
+/**
+ * Routes
+ */
 app.use('/api/admin', adminRoutes);
 app.use('/api/researcher', researcherRoutes);
 app.use('/api/attendee', attendeeRoutes);
 app.use('/api/wspresenter', wspresenterRoutes);
+app.use('/api/editor', editorRoutes);
+app.use('/api/reviewer', reviewerRoutes);
+
 
 
 app.use((req, res, next) => {

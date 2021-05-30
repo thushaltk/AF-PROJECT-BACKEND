@@ -40,7 +40,8 @@ const addNewResearcher = async (req, res, next) =>{
         email: req.body.email,
         mobileNo: req.body.mobileNo,
         isPaid: req.body.isPaid,
-        researchPaperURL: req.body.researchPaperURL
+        researchPaperURL: req.body.researchPaperURL,
+        status: 'Pending'
     })
     try {
         await createResearcher.save();
@@ -56,7 +57,7 @@ const addNewResearcher = async (req, res, next) =>{
 const getAllResearcherData = async (req, res,next) => {
     let researchers;
     try{
-        researchers = await Researcher.find({}, 'id fullName email mobileNo researchPaperURL');
+        researchers = await Researcher.find({}, 'id fullName email mobileNo researchPaperURL status');
         console.log(researchers);
     }catch(err){
         throw new HttpError("Fetching researchers failed, try again later", 500);
