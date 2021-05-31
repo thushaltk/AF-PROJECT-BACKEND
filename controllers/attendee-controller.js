@@ -1,12 +1,13 @@
 const { validationResult } = require('express-validator'); //For Validation
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require('uuid'); //Generate unique ID
 
-const HttpError = require('../models/http-error');
-
+const HttpError = require('../models/http-error');//Error Model
 //Mongoose schemas
 const Attendee = require("../models/attendee");
 
-// ***Add Attendee Details***
+/**
+ * Add Attendee Details to MongoDB
+ */
 const addAttendeeDetails = async (req, res, next) => {
     /**
      * Validate data coming from the req before saving them,
@@ -14,8 +15,7 @@ const addAttendeeDetails = async (req, res, next) => {
      */
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.send({message: "INVALID"});
-        //throw new HttpError("Invalid data, check inputs again", 422);
+        throw new HttpError("Invalid data, check inputs again", 422);
     }
     /**
      * Creates an object from "Attendee" mongoose schema
@@ -43,6 +43,10 @@ const addAttendeeDetails = async (req, res, next) => {
     res.status(201).json({ attendee: createAttendee });
 }
 
+
+/**
+ * Get all Attendee Details from MongoDB
+ */
 const getAllAttendeeDetails = async (req, res, next) => {
     let attendees;
     try{
@@ -55,5 +59,6 @@ const getAllAttendeeDetails = async (req, res, next) => {
     res.send(attendees);
 }
 
+//Exporting methods
 exports.addAttendeeDetails = addAttendeeDetails;
 exports.getAllAttendeeDetails = getAllAttendeeDetails;

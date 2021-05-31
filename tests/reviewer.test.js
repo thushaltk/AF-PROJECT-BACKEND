@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const supertest = require("supertest")
-const attendeeController = require("../controllers/attendee-controller");
+const reviewerController = require("../controllers/reviewer-controller");
 
 beforeEach((done) => {
     mongoose.connect(
@@ -20,16 +20,15 @@ afterEach((done) => {
     mongoose.connection.close(() => done());
 })
 
-test("GET all attendee data", async() => {
-    const attendee = await attendeeController.getAllAttendeeDetails();
-    await supertest(app).get("/api/attendee/")
+test("GET all reviewer data", async() => {
+    const reviewer = await reviewerController.getAllReviewerDetails();
+    await supertest(app).get("/api/reviewer/")
     .expect(200)
     .then((response) => {
-        expect(response.body[0].fullName).toBe(attendee.fullName);
-        expect(response.body[0].address).toBe(attendee.address);
-        expect(response.body[0].email).toBe(attendee.email);
-        expect(response.body[0].mobileNo).toBe(attendee.mobileNo);
-        expect(response.body[0].isPaid).toBe(attendee.isPaid);
-
+        expect(response.body[0].fullName).toBe(reviewer.fullName);
+        expect(response.body[0].address).toBe(reviewer.address);
+        expect(response.body[0].email).toBe(reviewer.email);
+        expect(response.body[0].mobileNo).toBe(reviewer.mobileNo);
+        expect(response.body[0].password).toBe(reviewer.password);
     })
 })

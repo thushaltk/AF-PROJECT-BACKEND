@@ -15,6 +15,6 @@ router.post("/add-wspresenter", [
     check('wsProposalLink').not().isEmpty()
 ], wspresenterController.addNewWSPresenter);
 
-
+router.get("/", wspresenterController.getAllWSPresenterDetails),
 
 module.exports = router;

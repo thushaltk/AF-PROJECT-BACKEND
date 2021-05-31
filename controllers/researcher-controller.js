@@ -52,7 +52,7 @@ const addNewResearcher = async (req, res, next) =>{
     }
 
     res.status(201).json({ researcher: createResearcher });
-}
+};
 
 const getAllResearcherData = async (req, res,next) => {
     let researchers;
@@ -65,8 +65,40 @@ const getAllResearcherData = async (req, res,next) => {
     res.send(researchers);
 };
 
+const updateResearcherByID = async (req, res, next) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        throw new HttpError("Invalid inputs, Check again", 422);
+    }
+    const {status} = req.body;
+    const rid = req.params.id;
+
+    let researchersArray;
+    try{
+        researchersArray = await Researcher.find();
+    }catch(err){
+        const error = new HttpError("Cannot find requested data....", 500);
+        return next(error);
+    }
+
+    const singleResearcher = researchersArray.filter(sr => sr.id === rid);
+    singleResearcher[0].status = status;
+
+    try{
+        await singleResearcher[0].save();
+        console.log("Updated successfully...")
+    }catch(err){
+        const error = new HttpError("Cannot update requested data....", 500);
+        return next(error);
+    }
+
+    res.status(201).json({ singleResearcher: singleResearcher });
+
+}
 
 exports.stripePayment = stripePayment;
 exports.addNewResearcher = addNewResearcher;
 exports.getAllResearcherData = getAllResearcherData;
+exports.updateResearcherByID = updateResearcherByID;
+
 
