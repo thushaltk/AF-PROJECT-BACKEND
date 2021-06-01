@@ -96,9 +96,38 @@ const updateResearcherByID = async (req, res, next) => {
 
 }
 
+const deleteResearcher = async (req, res, next) => {
+    const rid = req.params.id;
+
+    let resaercherArray;
+    try{
+        resaercherArray = await Researcher.find();
+    }catch(err){
+        const error = new HttpError("Cannot find requested data....", 500);
+        return next(error);
+    }
+
+    const singleResearcher = resaercherArray.filter(sr => sr.id === rid);
+
+    try{
+        await singleResearcher[0].remove();
+        console.log("Deleted successfully...")
+    }catch(err){
+        const error = new HttpError("Cannot delete requested data....", 500);
+        return next(error);
+    }
+
+    res.status(201).json({ message: "Deleted Researcher..." });
+
+}
+
+
+
 exports.stripePayment = stripePayment;
 exports.addNewResearcher = addNewResearcher;
 exports.getAllResearcherData = getAllResearcherData;
 exports.updateResearcherByID = updateResearcherByID;
+exports.deleteResearcher = deleteResearcher;
+
 
 
