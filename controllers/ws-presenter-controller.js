@@ -46,6 +46,36 @@ const getAllWSPresenterDetails = async (req, res, next) => {
     res.send(wspresenter);
 }
 
+const deleteWSPresenter = async (req, res, next) => {
+    let wspresentersArray;
+    try{
+        //Get all Workshop presenter data from DB
+        wspresentersArray = await WSPresenter.find({}, "id fullName address email mobileNo wsProposalLink status")
+    }catch(err){
+        throw new HttpError("Cannot fetch WSPresenter details..Try again!", 500);
+    }
+
+    //Get id passing from frontend from the request
+    const wsID = req.params.id;
+
+    //Filters the object which has a similar id
+    const singleWSPresenter = wspresentersArray.filter((ws) =>{
+        ws.id === wsID;
+    })
+
+    try{
+        await singleWSPresenter[0].remove(); //Dletes data from db
+        console.log("Deleted successfully...")
+    }catch(err){
+        const error = new HttpError("Cannot delete requested data....", 500);
+        return next(error);
+    }
+    
+    res.status(201).json({ message: "Deleted WSPresenter..." });
+
+}
+
 //Exporting methods.
 exports.addNewWSPresenter = addNewWSPresenter;
 exports.getAllWSPresenterDetails = getAllWSPresenterDetails;
+exports.deleteWSPresenter = deleteWSPresenter;

@@ -17,4 +17,6 @@ router.post("/add-wspresenter", [
 
 router.get("/", wspresenterController.getAllWSPresenterDetails),
 
+router.delete("/:id", wspresenterController.deleteWSPresenter)
+
 module.exports = router;
