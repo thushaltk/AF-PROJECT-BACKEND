@@ -17,5 +17,9 @@ router.post("/add-reviewer", [
 
 router.get("/", reviewerController.getAllReviewerDetails),
 
+router.post("/login", [
+    check('email').normalizeEmail().isEmail(),
+    check('password').not().isEmpty()
+], reviewerController.checkReviewerLogin)
 
 module.exports = router;
