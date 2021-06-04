@@ -23,6 +23,8 @@ router.patch("/:id", researcherController.updateResearcherByID);
 
 router.get("/", researcherController.getAllResearcherData);
 
+router.get("/reviewer-approved", researcherController.getAllApprovedDataByReviewer);
+
 router.delete("/:id", researcherController.deleteResearcher);
 
 module.exports = router;

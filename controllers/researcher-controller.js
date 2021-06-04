@@ -57,7 +57,7 @@ const addNewResearcher = async (req, res, next) =>{
 const getAllResearcherData = async (req, res,next) => {
     let researchers;
     try{
-        researchers = await Researcher.find({}, 'id fullName email mobileNo researchPaperURL status');
+        researchers = await Researcher.find({status: {$ne: "Approved By ADMIN"}});
         console.log(researchers);
     }catch(err){
         throw new HttpError("Fetching researchers failed, try again later", 500);
@@ -122,12 +122,30 @@ const deleteResearcher = async (req, res, next) => {
 }
 
 
+const getAllApprovedDataByReviewer = async (req, res, next) => {
+    let approvedResearcherData;
+    try{
+        approvedResearcherData = await Researcher.find({status: "Approved by Reviewer"});
+        if(!approvedResearcherData){
+            throw new HttpError("Cannot find data", 500);
+        }else{
+            console.log("Approved Researcher = ", approvedResearcherData);
+        }
+    }catch(err){
+        const error = new HttpError("Data cannot fetch!", 500);
+        return next(error);
+    }
+    res.send(approvedResearcherData);
+}
+
+
 
 exports.stripePayment = stripePayment;
 exports.addNewResearcher = addNewResearcher;
 exports.getAllResearcherData = getAllResearcherData;
 exports.updateResearcherByID = updateResearcherByID;
 exports.deleteResearcher = deleteResearcher;
+exports.getAllApprovedDataByReviewer = getAllApprovedDataByReviewer;
 
 
 

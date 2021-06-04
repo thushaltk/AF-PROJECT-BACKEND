@@ -22,7 +22,7 @@ const addAttendeeDetails = async (req, res, next) => {
      * Assign data from 'req.body' to the object.
     */
     const createAttendee = new Attendee({
-        uid: uuidv4(),
+        id: uuidv4(),
         fullName: req.body.fullName,
         address: req.body.address,
         email: req.body.email,
@@ -50,7 +50,7 @@ const addAttendeeDetails = async (req, res, next) => {
 const getAllAttendeeDetails = async (req, res, next) => {
     let attendees;
     try{
-        attendees = await Attendee.find({}, 'id fullName email address mobileNo');
+        attendees = await Attendee.find({}, 'id fullName email address mobileNo isPaid');
         console.log(attendees);
     }catch(err){
         console.log(err);
