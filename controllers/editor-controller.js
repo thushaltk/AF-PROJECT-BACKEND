@@ -46,9 +46,50 @@ const addNewEditor = async (req, res, next) => {
 }
 
 //Check Editor login
-const checkEditorLogin = (req, res, next) => {
-    
-}
+const checkEditorLogin = async (req, res, next) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        throw new HttpError("Invalid data, check inputs again", 422);
+    }
+    const {email, password} = req.body;
+    let existingEditor;
+    try{
+        existingEditor = await Editor.findOne({email: email});
+    }catch(err){
+        const error = new HttpError("Loggin Failed.", 500);
+        return next(error);
+    }
+    if(!existingEditor){
+        const error = new HttpError("Invalid Credentials.", 401);
+        return next(error);
+    }
+    let isValidPassword = false;
+    try{
+        isValidPassword = await bcrypt.compare(password, existingEditor.password);
+        console.log(isValidPassword);
+    }catch(err){
+        const error = new HttpError("Could not login..Invalid Credentials.", 500);
+        return next(error);
+    }
+    if(!isValidPassword){
+        const error = new HttpError("Invalid Credentials.", 401);
+        return next(error);
+    }
+    // //Generating JWT token
+    // let token;
+    // try{
+    //     token = jwt.sign({editorID: existingEditor.id, email: existingEditor.email}, 'editor_secret_key');
+    // }catch(err){
+    //     const error = new HttpError("Could not login", 500);
+    //     return next(error);
+    // }
+
+    res.json({
+        editorID: existingEditor.id,
+        email: existingEditor.email
+    });
+};
+
 
 const getAllEditorDetails = async (req, res, next) => {
     let editors;
@@ -64,3 +105,4 @@ const getAllEditorDetails = async (req, res, next) => {
 
 exports.addNewEditor = addNewEditor;
 exports.getAllEditorDetails = getAllEditorDetails;
+exports.checkEditorLogin = checkEditorLogin;

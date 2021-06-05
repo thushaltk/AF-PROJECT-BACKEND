@@ -17,6 +17,9 @@ router.post("/add-editor", [
 
 router.get("/", editorController.getAllEditorDetails),
 
-
+router.post("/login", [
+    check('email').normalizeEmail().isEmail(),
+    check('password').not().isEmpty()
+], editorController.checkEditorLogin);
 
 module.exports = router;
