@@ -11,18 +11,6 @@ const addNewEditor = async (req, res, next) => {
     if(!errors.isEmpty()){
         throw new HttpError("Invalid data, check inputs again", 422);
     }
-    
-    /**
-     * Hashing the password for security using bcryptjs
-     */
-    let hashedPassword;
-    try{
-        hashedPassword = await bcrypt.hash(req.body.password, 12);
-    }catch(err){
-        const error = new HttpError("Could not create editor, Try again.", 500);
-        return next(error);
-    }
-
     /**
      * creates object from mongoose schema 'Editor'
      */
@@ -32,7 +20,7 @@ const addNewEditor = async (req, res, next) => {
         address: req.body.address,
         email: req.body.email,
         mobileNo: req.body.mobileNo,
-        password: hashedPassword,
+        password: ""
     })
     try {
         await createEditor.save(); //savea data to db.
@@ -43,6 +31,42 @@ const addNewEditor = async (req, res, next) => {
     }
 
     res.status(201).json({ editor: createEditor });
+}
+
+const updatePassword = async (req, res, next) => {
+    const {email, password} = req.body;
+    let existingEditor;
+    try{
+        existingEditor = await Editor.findOne({email: email});
+    }catch(err){
+        const error = new HttpError("Loggin Failed.", 500);
+        return next(error);
+    }
+    if(!existingEditor){
+        const error = new HttpError("Email doesn't exist.", 401);
+        return next(error);
+    }
+    /**
+     * Hashing the password for security using bcryptjs
+     */
+    let hashedPassword;
+    try{
+        hashedPassword = await bcrypt.hash(password, 12);
+    }catch(err){
+        const error = new HttpError("Could not hash password, Try again.", 500);
+        return next(error);
+    }
+    existingEditor.password = hashedPassword;
+    console.log(existingEditor);
+    try{
+        await existingEditor.save();
+        console.log("Updated editor password successfully!")
+    }catch(err){
+        const error = new HttpError("Cannot update password. Try again...", 500);
+        return next(error);
+    }
+    res.status(201).json({editor: existingEditor});
+
 }
 
 //Check Editor login
@@ -102,7 +126,60 @@ const getAllEditorDetails = async (req, res, next) => {
     res.send(editors);
 }
 
+const getEditorById = async (req, res, next) => {
+    const eid = req.params.id;
+    console.log(eid);
+    let editor;
+    try{
+        editor = await Editor.findOne({id: eid}, "id fullName email address mobileNo");
+        console.log(editor);
+    }catch(err){
+        throw new HttpError("Fetching editor failed, try again", 500);
+    }
+    res.send(editor);
+}
+
+const updateEditorDetails = async (req, res, next) => {
+    const eid = req.params.id;
+    let existingEditor;
+    try{
+        existingEditor = await Editor.findOne({id: eid});
+    }catch(err){
+        throw new HttpError("Fetching editor failed, try again", 500);
+    }
+    if(!existingEditor){
+        const error = new HttpError("Editor doesn't exist.", 401);
+        return next(error);
+    }
+    existingEditor.fullName = req.body.fullName;
+    existingEditor.email = req.body.email;
+    existingEditor.mobileNo = req.body.mobileNo;
+    try{
+        await existingEditor.save();
+        console.log("Updated details...");
+    }catch(err){
+        const error = new HttpError("Cannot update details. Try again...", 500);
+        return next(error);
+    }
+    res.status(201).json({editor: existingEditor});
+}
+
+const deleteEditorDetails = async (req, res, next) => {
+    const eid = req.params.id;
+    try{
+        await Editor.findOneAndDelete({id: eid});
+        console.log("Deleted Successfully!...");
+    }catch(err){
+        return next(error);
+    }
+    res.status(201).json({ message: "Deleted Editor..." });
+}
+
 
 exports.addNewEditor = addNewEditor;
 exports.getAllEditorDetails = getAllEditorDetails;
 exports.checkEditorLogin = checkEditorLogin;
+exports.updatePassword = updatePassword;
+exports.getEditorById = getEditorById;
+exports.updateEditorDetails = updateEditorDetails;
+exports.deleteEditorDetails = deleteEditorDetails;

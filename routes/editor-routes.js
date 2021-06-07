@@ -7,15 +7,22 @@ const router = express.Router();
 const editorController = require("../controllers/editor-controller");
 
 
-router.post("/add-editor", [
+router.post("/", [
     check('fullName').not().isEmpty(),
     check('address').not().isEmpty(),
     check('email').normalizeEmail().isEmail(),
-    check('mobileNo').isLength({min: 10}),
-    check('password').not().isEmpty(),
-],editorController.addNewEditor);
+    check('mobileNo').isLength({ min: 10 })
+], editorController.addNewEditor);
 
-router.get("/", editorController.getAllEditorDetails),
+router.get("/:id", editorController.getEditorById);
+
+router.get("/", editorController.getAllEditorDetails);
+
+router.put("/:id", editorController.updateEditorDetails)
+
+router.patch("/", editorController.updatePassword);
+
+router.delete("/:id", editorController.deleteEditorDetails)
 
 router.post("/login", [
     check('email').normalizeEmail().isEmail(),
