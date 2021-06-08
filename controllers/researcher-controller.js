@@ -27,7 +27,6 @@ const stripePayment = (req, res, next) => {
     });
 }
 
-
 const addNewResearcher = async (req, res, next) =>{
     const errors = validationResult(req);
     if(!errors.isEmpty()){
@@ -121,7 +120,6 @@ const deleteResearcher = async (req, res, next) => {
 
 }
 
-
 const getAllApprovedDataByReviewer = async (req, res, next) => {
     let approvedResearcherData;
     try{
@@ -137,7 +135,6 @@ const getAllApprovedDataByReviewer = async (req, res, next) => {
     }
     res.send(approvedResearcherData);
 }
-
 
 
 exports.stripePayment = stripePayment;

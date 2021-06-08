@@ -15,8 +15,12 @@ router.post("/add-wspresenter", [
     check('wsProposalLink').not().isEmpty()
 ], wspresenterController.addNewWSPresenter);
 
-router.get("/", wspresenterController.getAllWSPresenterDetails),
+router.get("/", wspresenterController.getAllWSPresenterDetails);
 
-router.delete("/:id", wspresenterController.deleteWSPresenter)
+router.get("/reviewer-approved", wspresenterController.getAllApprovedDataByReviewer);
+
+router.patch("/:id", wspresenterController.updateWSPresenterByID);
+
+router.delete("/:id", wspresenterController.deleteWSPresenter);
 
 module.exports = router;

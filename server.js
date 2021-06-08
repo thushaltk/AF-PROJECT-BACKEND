@@ -11,6 +11,7 @@ const attendeeRoutes = require('./routes/attendee-routes');
 const wspresenterRoutes = require('./routes/ws-presenter-routes');
 const editorRoutes = require('./routes/editor-routes');
 const reviewerRoutes = require('./routes/reviewer-routes');
+const workshopRoutes = require('./routes/workshop-routes');
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use('/api/attendee', attendeeRoutes);
 app.use('/api/wspresenter', wspresenterRoutes);
 app.use('/api/editor', editorRoutes);
 app.use('/api/reviewer', reviewerRoutes);
+app.use('/api/workshop', workshopRoutes)
 
 
 

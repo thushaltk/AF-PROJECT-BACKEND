@@ -7,15 +7,22 @@ const router = express.Router();
 const reviewerController = require("../controllers/reviewer-controller");
 
 
-router.post("/add-reviewer", [
+router.post("/", [
     check('fullName').not().isEmpty(),
     check('address').not().isEmpty(),
     check('email').normalizeEmail().isEmail(),
     check('mobileNo').isLength({max: 10}),
-    check('password').not().isEmpty(),
 ], reviewerController.addNewReviewer);
 
+router.get("/:id", reviewerController.getReviewerById);
+
 router.get("/", reviewerController.getAllReviewerDetails),
+
+router.put("/:id", reviewerController.updateReviewerDetails)
+
+router.patch("/", reviewerController.updatePassword);
+
+router.delete("/:id", reviewerController.deleteReviewerDetails)
 
 router.post("/login", [
     check('email').normalizeEmail().isEmail(),

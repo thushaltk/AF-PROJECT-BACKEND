@@ -19,11 +19,11 @@ router.post("/add-researcher", [
     check('researchPaperURL').not().isEmpty()
 ],researcherController.addNewResearcher);
 
-router.patch("/:id", researcherController.updateResearcherByID);
-
 router.get("/", researcherController.getAllResearcherData);
 
 router.get("/reviewer-approved", researcherController.getAllApprovedDataByReviewer);
+
+router.patch("/:id", researcherController.updateResearcherByID);
 
 router.delete("/:id", researcherController.deleteResearcher);
 
