@@ -23,6 +23,8 @@ router.get("/", researcherController.getAllResearcherData);
 
 router.get("/reviewer-approved", researcherController.getAllApprovedDataByReviewer);
 
+router.get("/admin-approved", researcherController.getAllApprovedDataByAdmin);
+
 router.patch("/:id", researcherController.updateResearcherByID);
 
 router.delete("/:id", researcherController.deleteResearcher);

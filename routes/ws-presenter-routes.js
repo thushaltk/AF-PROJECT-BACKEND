@@ -19,6 +19,8 @@ router.get("/", wspresenterController.getAllWSPresenterDetails);
 
 router.get("/reviewer-approved", wspresenterController.getAllApprovedDataByReviewer);
 
+router.get("/admin-approved", wspresenterController.getAllApprovedDataByAdmin);
+
 router.patch("/:id", wspresenterController.updateWSPresenterByID);
 
 router.delete("/:id", wspresenterController.deleteWSPresenter);

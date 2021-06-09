@@ -62,6 +62,22 @@ const getAllApprovedDataByReviewer = async (req, res, next) => {
     res.send(approvedWSPresenterData);
 }
 
+const getAllApprovedDataByAdmin = async (req, res, next) => {
+    let approvedWSPresenterData;
+    try{
+        approvedWSPresenterData = await WSPresenter.find({status: "Approved By ADMIN"});
+        if(!approvedWSPresenterData){
+            throw new HttpError("Cannot find data", 500);
+        }else{
+            console.log("Approved WSPresenter = ", approvedWSPresenterData);
+        }
+    }catch(err){
+        const error = new HttpError("Data cannot fetch!", 500);
+        return next(error);
+    }
+    res.send(approvedWSPresenterData);
+}
+
 const updateWSPresenterByID = async (req, res, next) => {
     const {status} = req.body;
     const rid = req.params.id;
@@ -119,3 +135,4 @@ exports.getAllWSPresenterDetails = getAllWSPresenterDetails;
 exports.getAllApprovedDataByReviewer = getAllApprovedDataByReviewer;
 exports.deleteWSPresenter = deleteWSPresenter;
 exports.updateWSPresenterByID = updateWSPresenterByID;
+exports.getAllApprovedDataByAdmin = getAllApprovedDataByAdmin;

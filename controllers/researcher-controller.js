@@ -4,6 +4,7 @@ const { validationResult } = require('express-validator'); //For Validation
 
 const HttpError = require("../models/http-error");
 const Researcher = require("../models/researcher");
+const emailController = require("../controllers/mail-controller");
 
 const stripePayment = (req, res, next) => {
     console.log(req.body.token);
@@ -86,6 +87,19 @@ const updateResearcherByID = async (req, res, next) => {
     try{
         await singleResearcher[0].save();
         console.log("Updated successfully...")
+        if(status === "Approved By ADMIN"){
+            emailController.sendMailDetails({
+                to: singleResearcher[0].email,
+                subject: "ICAF 2021 - Your Research Paper APPROVED!!",
+                text: "Congatulation!!!... Your research paper has been approved and will be published in ICAF-2021 web page. Please feel free to contact us if you have any inquiries. Thank You and Enjoy the conference." 
+            }).then(res => {
+                if(res){
+                    console.log("Email sent successfully!");
+                }else{
+                    console.log("Email send failed!!!...");
+                }
+            });
+        }
     }catch(err){
         const error = new HttpError("Cannot update requested data....", 500);
         return next(error);
@@ -111,6 +125,17 @@ const deleteResearcher = async (req, res, next) => {
     try{
         await singleResearcher[0].remove();
         console.log("Deleted successfully...")
+            emailController.sendMailDetails({
+                to: singleResearcher[0].email,
+                subject: "ICAF 2021 - Your Research Paper Rejected!!",
+                text: "Thank you for your interest in ICAF-2021 conference but unfortunately your research paper has been rejected by our management due to not having a proper format according to our guidelines and your payement of $100 will be refunded as soon as possible. You can republish again and also please feel free to contact us if you have any other inquiries. Thank You!!!" 
+            }).then(res => {
+                if(res){
+                    console.log("Email sent successfully!");
+                }else{
+                    console.log("Email send failed!!!...");
+                }
+            });
     }catch(err){
         const error = new HttpError("Cannot delete requested data....", 500);
         return next(error);
@@ -136,6 +161,22 @@ const getAllApprovedDataByReviewer = async (req, res, next) => {
     res.send(approvedResearcherData);
 }
 
+const getAllApprovedDataByAdmin = async (req, res, next) => {
+    let approvedResearcherData;
+    try{
+        approvedResearcherData = await Researcher.find({status: "Approved By ADMIN"});
+        if(!approvedResearcherData){
+            throw new HttpError("Cannot find data", 500);
+        }else{
+            console.log("Approved Researcher = ", approvedResearcherData);
+        }
+    }catch(err){
+        const error = new HttpError("Data cannot fetch!", 500);
+        return next(error);
+    }
+    res.send(approvedResearcherData);
+}
+
 
 exports.stripePayment = stripePayment;
 exports.addNewResearcher = addNewResearcher;
@@ -143,6 +184,7 @@ exports.getAllResearcherData = getAllResearcherData;
 exports.updateResearcherByID = updateResearcherByID;
 exports.deleteResearcher = deleteResearcher;
 exports.getAllApprovedDataByReviewer = getAllApprovedDataByReviewer;
+exports.getAllApprovedDataByAdmin = getAllApprovedDataByAdmin;
 
 
 
