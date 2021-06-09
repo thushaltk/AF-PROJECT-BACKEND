@@ -8,19 +8,19 @@ const emailController = require("../controllers/mail-controller");
 
 const stripePayment = (req, res, next) => {
     console.log(req.body.token);
-    const {token, amount} = req.body;
+    const { token, amount } = req.body;
     const idempotencyKey = uuidv4();
 
     return stripe.customers.create({
         email: token.email,
         source: token
-    }).then(customer=>{
+    }).then(customer => {
         stripe.charges.create({
             amount: amount * 100,
             currency: 'usd',
             customer: customer.id,
             receipt_email: token.email
-        }, {idempotencyKey})
+        }, { idempotencyKey })
     }).then(result => {
         res.status(200).json(result)
     }).catch(err => {
@@ -28,9 +28,9 @@ const stripePayment = (req, res, next) => {
     });
 }
 
-const addNewResearcher = async (req, res, next) =>{
+const addNewResearcher = async (req, res, next) => {
     const errors = validationResult(req);
-    if(!errors.isEmpty()){
+    if (!errors.isEmpty()) {
         throw new HttpError("Invalid data, check inputs again", 422);
     }
     const createResearcher = new Researcher({
@@ -54,12 +54,12 @@ const addNewResearcher = async (req, res, next) =>{
     res.status(201).json({ researcher: createResearcher });
 };
 
-const getAllResearcherData = async (req, res,next) => {
+const getAllResearcherData = async (req, res, next) => {
     let researchers;
-    try{
-        researchers = await Researcher.find({status: {$ne: "Approved By ADMIN"}});
+    try {
+        researchers = await Researcher.find({ status: { $ne: "Approved By ADMIN" } });
         console.log(researchers);
-    }catch(err){
+    } catch (err) {
         throw new HttpError("Fetching researchers failed, try again later", 500);
     }
     res.send(researchers);
@@ -67,16 +67,16 @@ const getAllResearcherData = async (req, res,next) => {
 
 const updateResearcherByID = async (req, res, next) => {
     const errors = validationResult(req);
-    if(!errors.isEmpty()){
+    if (!errors.isEmpty()) {
         throw new HttpError("Invalid inputs, Check again", 422);
     }
-    const {status} = req.body;
+    const { status } = req.body;
     const rid = req.params.id;
 
     let researchersArray;
-    try{
+    try {
         researchersArray = await Researcher.find();
-    }catch(err){
+    } catch (err) {
         const error = new HttpError("Cannot find requested data....", 500);
         return next(error);
     }
@@ -84,23 +84,23 @@ const updateResearcherByID = async (req, res, next) => {
     const singleResearcher = researchersArray.filter(sr => sr.id === rid);
     singleResearcher[0].status = status;
 
-    try{
+    try {
         await singleResearcher[0].save();
         console.log("Updated successfully...")
-        if(status === "Approved By ADMIN"){
+        if (status === "Approved By ADMIN") {
             emailController.sendMailDetails({
                 to: singleResearcher[0].email,
                 subject: "ICAF 2021 - Your Research Paper APPROVED!!",
-                text: "Congatulation!!!... Your research paper has been approved and will be published in ICAF-2021 web page. Please feel free to contact us if you have any inquiries. Thank You and Enjoy the conference." 
+                text: "Congatulation!!!... Your research paper has been approved and will be published in ICAF-2021 web page. Please feel free to contact us if you have any inquiries. Thank You and Enjoy the conference."
             }).then(res => {
-                if(res){
+                if (res) {
                     console.log("Email sent successfully!");
-                }else{
+                } else {
                     console.log("Email send failed!!!...");
                 }
             });
         }
-    }catch(err){
+    } catch (err) {
         const error = new HttpError("Cannot update requested data....", 500);
         return next(error);
     }
@@ -113,30 +113,30 @@ const deleteResearcher = async (req, res, next) => {
     const rid = req.params.id;
 
     let resaercherArray;
-    try{
+    try {
         resaercherArray = await Researcher.find();
-    }catch(err){
+    } catch (err) {
         const error = new HttpError("Cannot find requested data....", 500);
         return next(error);
     }
 
     const singleResearcher = resaercherArray.filter(sr => sr.id === rid);
 
-    try{
+    try {
         await singleResearcher[0].remove();
         console.log("Deleted successfully...")
-            emailController.sendMailDetails({
-                to: singleResearcher[0].email,
-                subject: "ICAF 2021 - Your Research Paper Rejected!!",
-                text: "Thank you for your interest in ICAF-2021 conference but unfortunately your research paper has been rejected by our management due to not having a proper format according to our guidelines and your payement of $100 will be refunded as soon as possible. You can republish again and also please feel free to contact us if you have any other inquiries. Thank You!!!" 
-            }).then(res => {
-                if(res){
-                    console.log("Email sent successfully!");
-                }else{
-                    console.log("Email send failed!!!...");
-                }
-            });
-    }catch(err){
+        emailController.sendMailDetails({
+            to: singleResearcher[0].email,
+            subject: "ICAF 2021 - Your Research Paper Rejected!!",
+            text: "Thank you for your interest in ICAF-2021 conference but unfortunately your research paper has been rejected by our management due to not having a proper format according to our guidelines and your payement of $100 will be refunded as soon as possible. You can republish again and also please feel free to contact us if you have any other inquiries. Thank You!!!"
+        }).then(res => {
+            if (res) {
+                console.log("Email sent successfully!");
+            } else {
+                console.log("Email send failed!!!...");
+            }
+        });
+    } catch (err) {
         const error = new HttpError("Cannot delete requested data....", 500);
         return next(error);
     }
@@ -147,14 +147,14 @@ const deleteResearcher = async (req, res, next) => {
 
 const getAllApprovedDataByReviewer = async (req, res, next) => {
     let approvedResearcherData;
-    try{
-        approvedResearcherData = await Researcher.find({status: "Approved by Reviewer"});
-        if(!approvedResearcherData){
+    try {
+        approvedResearcherData = await Researcher.find({ status: "Approved by Reviewer" });
+        if (!approvedResearcherData) {
             throw new HttpError("Cannot find data", 500);
-        }else{
+        } else {
             console.log("Approved Researcher = ", approvedResearcherData);
         }
-    }catch(err){
+    } catch (err) {
         const error = new HttpError("Data cannot fetch!", 500);
         return next(error);
     }
@@ -163,14 +163,14 @@ const getAllApprovedDataByReviewer = async (req, res, next) => {
 
 const getAllApprovedDataByAdmin = async (req, res, next) => {
     let approvedResearcherData;
-    try{
-        approvedResearcherData = await Researcher.find({status: "Approved By ADMIN"});
-        if(!approvedResearcherData){
+    try {
+        approvedResearcherData = await Researcher.find({ status: "Approved By ADMIN" });
+        if (!approvedResearcherData) {
             throw new HttpError("Cannot find data", 500);
-        }else{
+        } else {
             console.log("Approved Researcher = ", approvedResearcherData);
         }
-    }catch(err){
+    } catch (err) {
         const error = new HttpError("Data cannot fetch!", 500);
         return next(error);
     }
