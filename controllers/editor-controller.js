@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 
 const Editor = require("../models/editor");
 const HttpError = require("../models/http-error");
+const Paper = require('../models/paper');
 
 //Adding new editors - done by admin
 const addNewEditor = async (req, res, next) => {
