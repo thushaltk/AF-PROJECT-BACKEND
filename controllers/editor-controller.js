@@ -175,6 +175,37 @@ const deleteEditorDetails = async (req, res, next) => {
     res.status(201).json({ message: "Deleted Editor..." });
 }
 
+const addRSPaper = async (req, res, next) => {
+    const createPaper = new Paper({
+        researchPaperTitle: req.body.researchPaperTitle,
+        coverImgURL: req.body.coverImgURL,
+        authorName: req.body.authorName,
+        authorEmail: req.body.authorEmail,
+        researchPaperURL: req.body.researchPaperURL
+    });
+    try {
+        await createPaper.save(); //saves data to db.
+        console.log("Data saved successfully in the DB....:)");
+    } catch (err) {
+        const error = new HttpError("Cannot add data to database :(....", 500);
+        return next(error);
+    }
+
+    res.status(201).json({ paper: createPaper });
+
+}
+
+const getAllRSPapers = async (req, res, next) => {
+    let papers;
+    try {
+        papers = await Paper.find();
+        console.log(papers);
+    } catch (err) {
+        throw new HttpError("Fetching papers failed, try again later", 500);
+    }
+    res.send(papers);
+}
+
 
 exports.addNewEditor = addNewEditor;
 exports.getAllEditorDetails = getAllEditorDetails;
@@ -183,3 +214,5 @@ exports.updatePassword = updatePassword;
 exports.getEditorById = getEditorById;
 exports.updateEditorDetails = updateEditorDetails;
 exports.deleteEditorDetails = deleteEditorDetails;
+exports.addRSPaper = addRSPaper;
+exports.getAllRSPapers = getAllRSPapers;
