@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const HttpError = require('../models/http-error'); //Error model
 //Mongoose schemas
 const WSPresenter = require("../models/workshopPresenter");
+const emailController = require("../controllers/mail-controller");
 
 /**
  * Add WSPresenter form data to the MongoDB database.
@@ -135,7 +136,7 @@ const deleteWSPresenter = async (req, res, next) => {
         await singleWSPresenter[0].remove(); //Deletes data from db
         console.log("Deleted successfully...");
         emailController.sendMailDetails({
-            to: singleResearcher[0].email,
+            to: singleWSPresenter[0].email,
             subject: "ICAF 2021 - Your Workshop Proposal Rejected!!",
             text: "Thank you for your interest in ICAF-2021 conference but unfortunately your research paper has been rejected by our management due to not having a proper format according to our guidelines and your payement of $100 will be refunded as soon as possible. You can republish again and also please feel free to contact us if you have any other inquiries. Thank You!!!"
         }).then(res => {
