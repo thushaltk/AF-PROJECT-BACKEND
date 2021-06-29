@@ -16,6 +16,8 @@ router.post("/", [
 
 router.get("/rs-papers", editorController.getAllRSPapers);
 
+router.get("/inquiries", editorController.getAllInquiries);
+
 router.get("/:id", editorController.getEditorById);
 
 router.get("/", editorController.getAllEditorDetails);
@@ -32,5 +34,7 @@ router.post("/login", [
 ], editorController.checkEditorLogin);
 
 router.post("/publish-paper", editorController.addRSPaper);
+
+router.post("/inquiries", editorController.addInquiries);
 
 module.exports = router;

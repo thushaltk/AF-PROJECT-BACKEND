@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const Editor = require("../models/editor");
 const HttpError = require("../models/http-error");
 const Paper = require('../models/paper');
+const Inquiry = require('../models/inquiries');
 
 //Adding new editors - done by admin
 const addNewEditor = async (req, res, next) => {
@@ -32,7 +33,7 @@ const addNewEditor = async (req, res, next) => {
     }
 
     res.status(201).json({ editor: createEditor });
-}
+};
 
 const updatePassword = async (req, res, next) => {
     const {email, password} = req.body;
@@ -68,7 +69,7 @@ const updatePassword = async (req, res, next) => {
     }
     res.status(201).json({editor: existingEditor});
 
-}
+};
 
 //Check Editor login
 const checkEditorLogin = async (req, res, next) => {
@@ -207,6 +208,35 @@ const getAllRSPapers = async (req, res, next) => {
     res.send(papers);
 }
 
+const addInquiries = async (req, res, next) => {
+    const createInquiry = new Inquiry({
+        id: uuidv4(),
+        fullName: req.body.fullName,
+        email: req.body.email,
+        message: req.body.message,
+    });
+    try {
+        await createInquiry.save(); //saves data to db.
+        console.log("Data saved successfully in the DB....:)");
+    } catch (err) {
+        const error = new HttpError("Cannot add data to database :(....", 500);
+        return next(error);
+    }
+
+    res.status(201).json({ unquiry: createInquiry });
+}
+
+const getAllInquiries = async (req, res, next) => {
+    let inquiries;
+    try {
+        inquiries = await Inquiry.find();
+        console.log(inquiries);
+    } catch (err) {
+        throw new HttpError("Fetching inquiries failed, try again later", 500);
+    }
+    res.send(inquiries);
+}
+
 
 exports.addNewEditor = addNewEditor;
 exports.getAllEditorDetails = getAllEditorDetails;
@@ -217,3 +247,5 @@ exports.updateEditorDetails = updateEditorDetails;
 exports.deleteEditorDetails = deleteEditorDetails;
 exports.addRSPaper = addRSPaper;
 exports.getAllRSPapers = getAllRSPapers;
+exports.addInquiries = addInquiries;
+exports.getAllInquiries = getAllInquiries;
