@@ -96,7 +96,7 @@ const updateWSPresenterByID = async (req, res, next) => {
         console.log("Updated successfully...")
         if (status === "Approved By ADMIN") {
             emailController.sendMailDetails({
-                to: singleResearcher[0].email,
+                to: singleWSPresenter[0].email,
                 subject: "ICAF 2021 - Your Workshop Proposal APPROVED!!",
                 text: "Congatulation!!!... Your research paper has been approved and will be published in ICAF-2021 web page. Please feel free to contact us if you have any inquiries. Thank You and Enjoy the conference."
             }).then(res => {
