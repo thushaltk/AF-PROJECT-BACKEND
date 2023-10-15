@@ -1,5 +1,5 @@
-# AF-PROJECT-BACKEND
-Node + Express Backend
+# Conference Management System (Backend) 
+NodeJS + Express Backend
 
 # Steps before running
 1. run "npm install"
